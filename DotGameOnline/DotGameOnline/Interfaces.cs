@@ -13,45 +13,6 @@ namespace DotGameOnline
         public Dictionary<string, FinalPlayer> GetPlayers { get; }
         Dictionary<SendPoint, string> GetPointsInZone(int x, int y, int width, int height);
     }
-    public struct Point
-    {
-        public int x, y;
-        public Point(int x, int y)
-        {
-            this.x = x;
-            this.y = y;
-        }
-        public Point Moved(int x, int y)
-        {
-            return new Point(this.x + x, this.y + y);
-        }
-        public static bool operator ==(Point pointA, Point pointB) => pointA.x == pointB.x && pointA.y == pointB.y;
-        public static bool operator !=(Point pointA, Point pointB) => pointA.x != pointB.x || pointA.y != pointB.y;
-        public static Point operator +(Point pointA, Point pointB) => new Point(pointA.x + pointB.x, pointA.y + pointB.y);
-        public static Point operator -(Point pointA, Point pointB) => new Point(pointA.x - pointB.x, pointA.y - pointB.y);
-    }
-    public class SendPoint
-    {
-        public int x { get; set; }
-        public int y { get; set; }
-        public string playerID { get; set; }
-        public SendPoint()
-        {
-
-        }
-        public SendPoint(int x, int y, string playerID)
-        {
-            this.x = x;
-            this.y = y;
-            this.playerID = playerID;
-        }
-        public SendPoint(FinalPointClass point)
-        {
-            this.x = point.GetPoint().x;
-            this.y = point.GetPoint().y;
-            this.playerID = point.PlayerID;
-        }
-    }
     public interface IPoint
     {
         Point GetPoint();
@@ -85,6 +46,49 @@ namespace DotGameOnline
         public override string ToString()
         {
             return $"rgb({(int)(R * 255)}, {(int)(G * 255)}, {(int)(B * 255)})";
+        }
+    }
+    public struct Point
+    {
+        public int x, y;
+        public Point(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+        public Point Moved(int x, int y)
+        {
+            return new Point(this.x + x, this.y + y);
+        }
+        public static bool operator ==(Point pointA, Point pointB) => pointA.x == pointB.x && pointA.y == pointB.y;
+        public static bool operator !=(Point pointA, Point pointB) => pointA.x != pointB.x || pointA.y != pointB.y;
+        public static Point operator +(Point pointA, Point pointB) => new Point(pointA.x + pointB.x, pointA.y + pointB.y);
+        public static Point operator -(Point pointA, Point pointB) => new Point(pointA.x - pointB.x, pointA.y - pointB.y);
+    }
+
+    /// <summary>
+    /// What will be sent to users
+    /// </summary>
+    public class SendPoint
+    {
+        public int x { get; set; }
+        public int y { get; set; }
+        public string playerID { get; set; }
+        public SendPoint()
+        {
+
+        }
+        public SendPoint(int x, int y, string playerID)
+        {
+            this.x = x;
+            this.y = y;
+            this.playerID = playerID;
+        }
+        public SendPoint(FinalPointClass point)
+        {
+            this.x = point.GetPoint().x;
+            this.y = point.GetPoint().y;
+            this.playerID = point.PlayerID;
         }
     }
 

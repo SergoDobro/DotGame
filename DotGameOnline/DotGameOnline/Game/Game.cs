@@ -11,7 +11,7 @@ namespace DotGameOnline.Game
     {
         Point localPoint;
         public string PlayerID { get { return playerID; } }
-        public string massID { get; set; } = "";
+        public string MassID { get; set; } = "";
         public bool IsChecked { get; set; }
         public bool IsActive { get; set; }
         string playerID;
@@ -138,10 +138,10 @@ namespace DotGameOnline.Game
         void Circle_FindDots(List<Point> circle)
         {
             bool success = false;
-            string playerID = "";
+            string playerID;
             Point point;
-            Point upperPoint = circle[0];
-            Point lowerPoint = circle[0];
+            Point upperPoint;
+            Point lowerPoint;
             bool miniFlag = true;
             for (int i = 0; i < circle.Count; i++)
             {
@@ -157,16 +157,7 @@ namespace DotGameOnline.Game
                     upperPoint = point.Moved(-1, 0);
                     if (points.ContainsKey(upperPoint)) continue;
                 }
-
                 playerID = points[point].PlayerID;
-
-
-                FinalPointClass lowerPointClass = new FinalPointClass(lowerPoint, points[circle[0]].PlayerID);
-                //points.Add(lowerPoint, lowerPointClass);
-                lowerPointClass.it = 2;
-                FinalPointClass upperPointClass = new FinalPointClass(upperPoint, points[circle[0]].PlayerID);
-                //points.Add(upperPoint, upperPointClass);
-                upperPointClass.it = 2;
 
                 List<Point> checkedForCirclingUpper = new List<Point>();
                 List<Point> checkedForCirclingLower = new List<Point>();
@@ -189,9 +180,9 @@ namespace DotGameOnline.Game
                                 circleNeighbors.RemoveAt(ii);
                                 ii--;
                             }
-                            else if (points.ContainsKey(circleNeighbors[ii]) && points[circleNeighbors[ii]].massID != "")
+                            else if (points.ContainsKey(circleNeighbors[ii]) && points[circleNeighbors[ii]].MassID != "")
                             {
-                                string id = points[circleNeighbors[ii]].massID;
+                                string id = points[circleNeighbors[ii]].MassID;
                                 if (!checkedMassesUpper.Contains(id))
                                 {
                                     checkedMassesUpper.Add(id);
@@ -215,9 +206,9 @@ namespace DotGameOnline.Game
                                 circleNeighbors.RemoveAt(ii);
                                 ii--;
                             }
-                            else if (points.ContainsKey(circleNeighbors[ii]) && points[circleNeighbors[ii]].massID != "")
+                            else if (points.ContainsKey(circleNeighbors[ii]) && points[circleNeighbors[ii]].MassID != "")
                             {
-                                string id = points[circleNeighbors[ii]].massID;
+                                string id = points[circleNeighbors[ii]].MassID;
                                 if (!checkedMassesLower.Contains(id))
                                 {
                                     checkedMassesLower.Add(id);
@@ -246,8 +237,8 @@ namespace DotGameOnline.Game
                 if (!flag) continue;
                 success = true;
 
-                counter++;
-                string newMassID = (counter).ToString();
+                massesCounter++;
+                string newMassID = (massesCounter).ToString();
                 if (toCheckPointsUpper.Count == 0)
                 {
                     checkedMassesUpper.Remove("");
@@ -255,7 +246,7 @@ namespace DotGameOnline.Game
                     {
                         foreach (var d in masses[mID])
                         {
-                            points[d].massID = newMassID;
+                            points[d].MassID = newMassID;
                         }
                         masses.Remove(mID);
                     }
@@ -264,11 +255,11 @@ namespace DotGameOnline.Game
                     {
                         if (!points.ContainsKey(p))
                         {
-                            points.Add(p, new FinalPointClass(p, playerID) { IsActive = false, massID = newMassID });
+                            points.Add(p, new FinalPointClass(p, playerID) { IsActive = false, MassID = newMassID });
                         }
                         else
                         {
-                            points[p].massID = newMassID;
+                            points[p].MassID = newMassID;
                         }
                     }
                 }
@@ -279,7 +270,7 @@ namespace DotGameOnline.Game
                     {
                         foreach (var d in masses[mID])
                         {
-                            points[d].massID = newMassID;
+                            points[d].MassID = newMassID;
                         }
                         masses.Remove(mID);
                     }
@@ -288,7 +279,7 @@ namespace DotGameOnline.Game
                     {
                         if (!points.ContainsKey(p))
                         {
-                            points.Add(p, new FinalPointClass(p, playerID) { IsActive = false, massID = newMassID });
+                            points.Add(p, new FinalPointClass(p, playerID) { IsActive = false, MassID = newMassID });
                         }
                     }
                 }
@@ -311,7 +302,7 @@ namespace DotGameOnline.Game
             return circleNeighbors;
         }
 
-        public void SetActivities()
+        public void SetActivities() // IN PROGRESS
         {
             foreach (var p in points)
             {
@@ -334,8 +325,8 @@ namespace DotGameOnline.Game
             }
         }
 
-        static int counter = 0;
-        Dictionary<string, List<Point>> masses = new Dictionary<string, List<Point>>(); // only inactive dots
+        static int massesCounter = 0; // IN PROGRESS
+        Dictionary<string, List<Point>> masses = new Dictionary<string, List<Point>>(); // only inactive dots // IN PROGRESS
 
 
         public Dictionary<SendPoint, string> GetPointsInZone(int x, int y, int width, int height)
