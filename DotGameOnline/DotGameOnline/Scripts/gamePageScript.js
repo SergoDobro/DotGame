@@ -1,3 +1,4 @@
-﻿window.onload = function () {
-    alert("SUCCESS!");
+﻿
+window.onload = function () {
+    alert("asd");
 };
