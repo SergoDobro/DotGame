@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <input id="name"/>
+    <canvas id="MainCanvas" width="320" height="240"></canvas>
+    <script>
+        window.onload = function () {
+        };
+        const canvas = document.getElementById("MainCanvas");
+        const ctx = canvas.getContext("2d");
+        const width = canvas.width = window.innerWidth;
+        const height = canvas.height = window.innerHeight;
+        const pointSize = 10;
+        ctx.fillStyle = 'rgb(0, 0, 0)';
+        ctx.fillRect(0, 0, width, height);
+        //List of Players
+        var players = {
+            "Player 0": "rgb(255, 255, 255)"
+        };
+        //List of Dots
+        var dots = [
+            [0, 0, "Player 0"],
+        ];
+
+        var currentPlayers = 0;
+        var currentdots = 0;
+        var newcurrentdots = 0;
+        GetPoints().then((x) => {
+            currentdots = newcurrentdots - currentPlayers;
+        });
+        
+        
+        async function GetPoints() {
+            var GettingPoints = await fetch("/GetPoints",
+                {
+                    method: 'Post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        X: 0,
+                        Y: 0,
+                        Width: 320,
+                        Height: 180
+                    })
+                });
+            var res = await GettingPoints.json();
+            newcurrentdots = res.dots.length;
+            currentPlayers = res.players.length;
+            for (var i = 0; i < res.players.length; i++) {
+                players[res.players[i].key] = res.players[i].value;
+            }
+            dots = res.dots;
+            UpdateMap();
+        }
+        async function UpdateMap() {
+            for (var i = 0; i < dots.length; i++) {
+                var c = players[dots[i][2]];
+                ctx.fillStyle = c;
+                ctx.fillRect(dots[i][0] * pointSize, dots[i][1] * pointSize, pointSize, pointSize);
+            }
+        }
+
+        async function getMousePosition(_canvas, event) {
+            let rect = _canvas.getBoundingClientRect();
+            let x = event.clientX - rect.left - 3;
+            let y = event.clientY - rect.top - 3;
+            x = Math.round(x / pointSize) 
+            y = Math.round(y / pointSize) 
+            ctx.fillStyle = "rgb(255, 255, 255)";
+            ctx.fillRect(x * pointSize, y * pointSize, pointSize, pointSize);
+            if (true || currentdots + currentPlayers == newcurrentdots) {
+                currentdots = dots.length;
+                var name = document.getElementById("name").value;
+                var GettingPoints = await fetch("/SetPoint",
+                    {
+                        method: 'Post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            x: x,
+                            y: y,
+                            playerID: name
+                        })
+                    });
+                var res = await GettingPoints;
+            }
+            
+            GetPoints();
+        }
+        canvas.addEventListener("mousedown", function (e) {
+            getMousePosition(canvas, e);
+        });
+
+    </script>
+</body>
+</html>
